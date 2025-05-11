@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: worker-db-5-init-scripts
+  namespace: banco
+data:
+  init.sql: |
+    CREATE TABLE Cliente (
+      ID_CLIENTE VARCHAR(50) PRIMARY KEY,
+      NOMBRE VARCHAR(100),
+      EMAIL VARCHAR(100),
+      TELEFONO VARCHAR(20)
+    );
+    CREATE TABLE Cuenta (
+      ID_CUENTA VARCHAR(50) PRIMARY KEY,
+      ID_CLIENTE VARCHAR(50) REFERENCES Cliente(ID_CLIENTE),
+      SALDO DECIMAL(12, 2),
+      TIPO_CUENTA VARCHAR(50)
+    );
+    CREATE TABLE Transacciones (
+    ID_TRANSACCION VARCHAR(50) PRIMARY KEY,
+    ID_ORIGEN VARCHAR(50) REFERENCES Cuenta(ID_CUENTA),
+    ID_DESTINO VARCHAR(50) REFERENCES Cuenta(ID_CUENTA),
+    MONTO DECIMAL(12, 2),
+    FECHA_HORA TIMESTAMP,
+    ESTADO VARCHAR(20)
+    );

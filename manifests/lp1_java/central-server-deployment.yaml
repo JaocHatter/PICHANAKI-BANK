@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-server
+  namespace: banco
+  labels:
+    app: central-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: central-server
+  template:
+    metadata:
+      labels:
+        app: central-server
+    spec:
+      containers:
+      - name: central-server-container
+        image: jarex1012/central-server:v1
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: central-server-svc
+  namespace: banco 
+spec:
+  selector:
+    app: central-server
+  ports:
+  - protocol: TCP
+    port: 80 
+    targetPort: 8000 
+  type: NodePort 

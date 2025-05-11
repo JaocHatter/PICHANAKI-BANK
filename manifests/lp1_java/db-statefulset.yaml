@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: Service 
+metadata:
+  name: worker-db-svc
+  namespace: banco 
+  labels:
+    app: worker-db
+spec:
+  ports:
+  - name: psql 
+    port: 5432
+    targetPort: 5432
+  - name: http-api 
+    port: 8081   
+    targetPort: 8081 
+  clusterIP: None
+  selector:
+    app: worker-db
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: worker-db
+  namespace: banco # Usa tu namespace
+spec:
+  serviceName: "worker-db-svc"
+  replicas: 6
+  selector:
+    matchLabels:
+      app: worker-db
+  template:
+    metadata:
+      labels:
+        app: worker-db
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers: 
+      - name: init-db
+        image: busybox:latest
+        command: ["sh", "-c", "POD_ORDINAL=$(hostname | rev | cut -d'-' -f1 | rev); echo \"Inicializando DB para worker-db-${POD_ORDINAL}\"; cp \"/config-scripts/worker-db-${POD_ORDINAL}/init.sql\" /docker-entrypoint-initdb.d/init.sql"]
+        volumeMounts:
+        - name: init-scripts-pod-0
+          mountPath: /config-scripts/worker-db-0
+        - name: init-scripts-pod-1
+          mountPath: /config-scripts/worker-db-1
+        - name: init-scripts-pod-2
+          mountPath: /config-scripts/worker-db-2
+        - name: init-scripts-pod-3
+          mountPath: /config-scripts/worker-db-3
+        - name: init-scripts-pod-4
+          mountPath: /config-scripts/worker-db-4
+        - name: init-scripts-pod-5
+          mountPath: /config-scripts/worker-db-5
+        - name: db-init-dir
+          mountPath: /docker-entrypoint-initdb.d
+      containers:
+      - name: postgres-db 
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+          name: psql
+        env:
+        - name: POSTGRES_USER
+          value: "user_parcial"
+        - name: POSTGRES_PASSWORD
+          value: "pw_parcial"
+        - name: POSTGRES_DB
+          value: "banco_distribuido"
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+        - name: db-init-dir 
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: true
+
+      - name: worker-api # NUEVO CONTENEDOR PARA LA API DEL WORKER
+        image: jarex1012/worker-node-jaoc:v1
+        ports:
+        - containerPort: 8081 # Puerto que la API Worker Java escucha
+          name: http
+        env:
+        - name: WORKER_ID # Inyectado por Kubernetes
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name # Será worker-db-0, worker-db-1, etc.
+        - name: WORKER_PORT
+          value: "8081"
+        - name: DB_HOST
+          value: "localhost" # La API se conecta a la BD en el mismo Pod
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          value: "user_parcial"
+        - name: DB_PASSWORD
+          value: "pw_parcial"
+        - name: DB_NAME
+          value: "banco_distribuido"
+      volumes:
+      - name: init-scripts-pod-0
+        configMap:
+          name: worker-db-0-init-scripts
+      - name: init-scripts-pod-1
+        configMap:
+          name: worker-db-1-init-scripts
+      - name: init-scripts-pod-2
+        configMap:
+          name: worker-db-2-init-scripts
+      - name: init-scripts-pod-3
+        configMap:
+          name: worker-db-3-init-scripts
+      - name: init-scripts-pod-4
+        configMap:
+          name: worker-db-4-init-scripts
+      - name: init-scripts-pod-5
+        configMap:
+          name: worker-db-5-init-scripts
+      - name: db-init-dir
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: db-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 250Mi

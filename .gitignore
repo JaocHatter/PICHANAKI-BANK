@@ -1,0 +1,50 @@
+# Archivos y directorios específicos de IDEs
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+nbproject/ # NetBeans
+eclipse/ # Eclipse
+
+# Archivos de compilación de Maven y Java
+target/
+**/target/ # Para asegurar que los target/ dentro de los módulos también se ignoren
+*.class
+
+# Archivos de log
+*.log
+logs/
+
+# Archivos de sistema operativo
+.DS_Store # macOS
+Thumbs.db # Windows
+ehthumbs.db # Windows
+
+# Archivos generados por el sistema de construcción o temporales
+dependency-reduced-pom.xml # Generado por maven-shade-plugin
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Archivos específicos de configuración local (si los tuvieras)
+# .env
+# local.properties
+
+# Archivos de ejecución de Java (si generas scripts o dumps)
+hs_err_pid*
+replay_pid*
+
+# Dependencias descargadas por algunos IDEs o herramientas
+# .gradle/ # Si usaras Gradle
+# build/ # Directorio de compilación de Gradle
+
+# Comentarios:
+# Ignorar todos los directorios 'target' en cualquier nivel
+# Ignorar todos los archivos .class
+# Ignorar logs
+# Ignorar archivos específicos de IDEs y SO
+# Ignorar archivos generados por Maven como dependency-reduced-pom.xml

@@ -1,0 +1,115 @@
+# Parcial 2025-I
+## Escuela de Ciencia de la Computación
+### CC4P1 Programación Concurrente y Distribuida
+
+**Participantes:** 
+- Jared Orihuela
+- Mitchel Soto
+- Yoel Mantari
+
+
+Llamaremos a nuestros Pods worker-db-0 a worker-db-5.
+
+    worker-db-0: Cliente-P1 (R1), Cuenta-P1 (R1), Transacciones-P1 (R1)
+    worker-db-1: Cliente-P1 (R2), Cuenta-P2 (R1), Transacciones-P2 (R1)
+    worker-db-2: Cliente-P1 (R3), Cuenta-P1 (R2), Transacciones-P1 (R2)
+    worker-db-3: Cliente-P2 (R1), Cuenta-P2 (R2), Transacciones-P2 (R2)
+    worker-db-4: Cliente-P2 (R2), Cuenta-P1 (R3), Transacciones-P1 (R3)
+    worker-db-5: Cliente-P2 (R3), Cuenta-P2 (R3), Transacciones-P2 (R3)
+
+## Pasos para levantar los NodosTrabajadores
+```bash
+kubectl create namespace banco
+
+kubectl apply -f cm-worker-db-0-init.yaml \
+kubectl apply -f cm-worker-db-1-init.yaml \
+kubectl apply -f cm-worker-db-2-init.yaml \
+kubectl apply -f cm-worker-db-3-init.yaml \
+kubectl apply -f cm-worker-db-4-init.yaml \
+kubectl apply -f cm-worker-db-5-init.yaml
+
+kubectl apply -f db-statefulset.yaml
+
+# Esperar unos minutos y...
+kubectl get pods -n banco
+```
+## Levantar Servidor Central
+```bash
+kubectl apply -f central-server-deployment.yaml
+```
+
+Las operaciones serán exitosas si ves los pods en status: "RUNNING"
+
+
+# Banco Distribuido
+
+```bash
+banco-distribuido-sistema/  
+├── pom.xml                   
+├── central-server/           
+│   ├── pom.xml               
+│   └── src/
+│       └── main/
+│           └── java/
+│               └── com/
+│                   └── parcial/
+│                       └── central/
+│                           ├── CentralNodeServer.java
+│                           ├── handlers/
+│                           │   ├── ConsultarSaldoHandler.java
+│                           │   ├── TransferirFondosHandler.java
+│                           │   ├── ArqueoHandler.java
+│                           │   └── BaseHttpHandler.java
+│                           └── services/
+│                               ├── WorkerNodeRegistry.java
+│                               └── WorkerNodeClient.java
+└── worker-node/              
+    ├── pom.xml               
+    └── src/
+        └── main/
+            └── java/
+                └── com/
+                    └── parcial/
+                        └── worker/
+                            ├── WorkerNodeServer.java
+                            ├── handlers/
+                            │   ├── WorkerSaldoHandler.java
+                            │   ├── WorkerTransferirHandler.java
+                            │   ├── WorkerArqueoParcialHandler.java
+                            │   └── BaseWorkerHandler.java
+                            └── persistence/
+                                ├── DatabaseManager.java
+                                └── dao/
+                                    ├── CuentaDAO.java
+                                    └── TransaccionDAO.java 
+```
+
+## TODO
+
+Añadir Probes para los nodos trabajadores
+
+```yaml
+readinessProbe:
+          httpGet:
+            path: /api/worker/health 
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/worker/health
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 20
+```
+
+De igual manera para el Server Central
+
+```yaml
+readinessProbe:
+          httpGet:
+            path: /api/health # Necesitarías un endpoint de health en tu CentralNodeServer
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+```
