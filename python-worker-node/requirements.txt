@@ -1,0 +1,4 @@
+# This project uses only Python standard libraries to adhere to exam constraints.
+# No external packages are required.
+# If you were to add any, list them here, e.g.:
+# requests==2.25.1
