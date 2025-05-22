@@ -3,7 +3,7 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY worker_node_python.py .
+COPY src/worker_node_python.py .
 # If you have other local dependencies or data initialization scripts, copy them too.
 # COPY init_data.sh . 
 # RUN chmod +x init_data.sh

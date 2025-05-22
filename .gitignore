@@ -48,3 +48,6 @@ replay_pid*
 # Ignorar logs
 # Ignorar archivos específicos de IDEs y SO
 # Ignorar archivos generados por Maven como dependency-reduced-pom.xml
+
+# Data  
+data/
