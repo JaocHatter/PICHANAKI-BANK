@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: worker-js
+  namespace: banco
+spec:
+  serviceName: "worker-js-svc"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: worker-js
+  template:
+    metadata:
+      labels:
+        app: worker-js
+    spec:
+      containers:
+      - name: js-worker
+        image: losstwin/worker-node-js:v1 #image: worker-node-js:v1
+        ports:
+        - containerPort: 8082
+        env:
+        - name: WORKER_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: WORKER_PORT
+          value: "8082"
+        - name: DB_HOST
+          value: "localhost"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          value: "user_parcial"
+        - name: DB_PASSWORD
+          value: "pw_parcial"
+        - name: DB_NAME
+          value: "banco_distribuido"
