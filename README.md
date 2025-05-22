@@ -122,6 +122,44 @@ kubectl logs worker-db-0 -n banco
 kubectl logs central-server-6d6ff6d545-rghss -n banco
 ```
 
+## Obtener endpoints  
+```bash
+# Copy the INTERNAL-IP
+kubectl get nodes -o wide
+
+# Obtener el puerto del service 
+#Busca en la salida la columna PORT(S). Verás algo como 80:ZZZZZ/TCP, donde ZZZZZ es tu NodePort.
+kubectl get svc -n banco
+```
+#### Endpoints del Nodo Central 
+- /api/saldo
+- /api/transferencia
+- /api/arqueo
+
+##### Consulta 
+```bash
+# Reemplaza <IP-DEL-NODO>, <NodePort_ZZZZZ> y <ID_DE_CUENTA_REAL> con tus valores
+curl "http://<IP-DEL-NODO>:<NodePort_ZZZZZ>/api/saldo?cuentaId=<ID_DE_CUENTA_REAL>"
+```
+
+##### Transferencia
+```bash
+# Reemplaza <IP-DEL-NODO>, <NodePort_ZZZZZ>, <ID_CUENTA_ORIGEN>, <ID_CUENTA_DESTINO> y <MONTO>
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+        "cuentaOrigen": "<ID_CUENTA_ORIGEN>",
+        "cuentaDestino": "<ID_CUENTA_DESTINO>",
+        "monto": <MONTO_A_TRANSFERIR>
+      }' \
+  "http://<IP-DEL-NODO>:<NodePort_ZZZZZ>/api/transferencia"
+```
+
+##### Arqueo
+```bash
+# Reemplaza <IP-DEL-NODO> y <NodePort_ZZZZZ>
+curl "http://<IP-DEL-NODO>:<NodePort_ZZZZZ>/api/arqueo"
+```
 
 ## TODO
 
