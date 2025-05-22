@@ -65,7 +65,7 @@ spec:
         - name: POSTGRES_PASSWORD
           value: "pw_parcial"
         - name: POSTGRES_DB
-          value: "banco_distribuido"
+          value: "  ibuido"
         volumeMounts:
         - name: db-data
           mountPath: /var/lib/postgresql/data
@@ -74,7 +74,7 @@ spec:
           readOnly: true
 
       - name: worker-api # NUEVO CONTENEDOR PARA LA API DEL WORKER
-        image: jarex1012/worker-node-jaoc:v1
+        image: dirac22/pichanaki-bank-python-worker
         ports:
         - containerPort: 8081 # Puerto que la API Worker Java escucha
           name: http
