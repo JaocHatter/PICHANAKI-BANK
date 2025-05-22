@@ -23,7 +23,7 @@ public class TransferirFondosHandler extends BaseHttpHandler {
         this.workerNodeRegistry = workerNodeRegistry;
         this.workerNodeClient = workerNodeClient;
     }
-
+    
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {

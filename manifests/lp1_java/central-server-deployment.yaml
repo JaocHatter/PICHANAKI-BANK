@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: central-server-container
-        image: jarex1012/central-server:v1
+        image: jarex1012/central-server-v2
         ports:
         - containerPort: 8000
 ---

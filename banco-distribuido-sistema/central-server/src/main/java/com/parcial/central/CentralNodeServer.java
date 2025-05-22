@@ -48,12 +48,12 @@ public class CentralNodeServer {
 
         // Simulación de registro de Nodos Trabajadores (esto vendría de una config o descubrimiento)
         // Los puertos 8081 son para las APIs de los workers, no para sus BDs.
-        workerNodeRegistry.addWorkerNode("worker-db-0", "http://worker-db-0.worker-db-svc.default.svc.cluster.local:8081", "Cliente-P1,Cuenta-P1,Transacciones-P1");
-        workerNodeRegistry.addWorkerNode("worker-db-1", "http://worker-db-1.worker-db-svc.default.svc.cluster.local:8081", "Cliente-P1,Cuenta-P2,Transacciones-P2");
-        workerNodeRegistry.addWorkerNode("worker-db-2", "http://worker-db-1.worker-db-svc.default.svc.cluster.local:8081", "Cliente-P1,Cuenta-P1,Transacciones-P1");
-        workerNodeRegistry.addWorkerNode("worker-db-3", "http://worker-db-1.worker-db-svc.default.svc.cluster.local:8081", "Cliente-P2,Cuenta-P2,Transacciones-P2");
-        workerNodeRegistry.addWorkerNode("worker-db-4", "http://worker-db-1.worker-db-svc.default.svc.cluster.local:8081", "Cliente-P2,Cuenta-P1,Transacciones-P1");
-        workerNodeRegistry.addWorkerNode("worker-db-5", "http://worker-db-5.worker-db-svc.default.svc.cluster.local:8081", "Cliente-P2,Cuenta-P2,Transacciones-P2");
+        workerNodeRegistry.addWorkerNode("worker-db-0", "http://worker-db-0.worker-db-svc.banco.svc.cluster.local:8081", "Cliente-P1,Cuenta-P1,Transacciones-P1");
+        workerNodeRegistry.addWorkerNode("worker-db-1", "http://worker-db-1.worker-db-svc.banco.svc.cluster.local:8081", "Cliente-P1,Cuenta-P2,Transacciones-P2");
+        workerNodeRegistry.addWorkerNode("worker-db-2", "http://worker-db-1.worker-db-svc.banco.svc.cluster.local:8081", "Cliente-P1,Cuenta-P1,Transacciones-P1");
+        workerNodeRegistry.addWorkerNode("worker-db-3", "http://worker-db-1.worker-db-svc.banco.svc.cluster.local:8081", "Cliente-P2,Cuenta-P2,Transacciones-P2");
+        workerNodeRegistry.addWorkerNode("worker-db-4", "http://worker-db-1.worker-db-svc.banco.svc.cluster.local:8081", "Cliente-P2,Cuenta-P1,Transacciones-P1");
+        workerNodeRegistry.addWorkerNode("worker-db-5", "http://worker-db-5.worker-db-svc.banco.svc.cluster.local:8081", "Cliente-P2,Cuenta-P2,Transacciones-P2");
 
         // ThreadPool para manejar las solicitudes HTTP entrantes
         this.requestHandlerThreadPool = new ThreadPoolExecutor(
@@ -65,7 +65,7 @@ public class CentralNodeServer {
         );
         LOGGER.info("ThreadPool para Handlers HTTP inicializado con " + CORE_POOL_SIZE + " hilos base y " + MAX_POOL_SIZE + " máximos.");
     }
-
+    
     public void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress(port), 0);
 

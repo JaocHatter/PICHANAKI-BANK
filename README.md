@@ -100,6 +100,29 @@ banco-distribuido-sistema/
 └── README.md
 ```
 
+## Verificar que el nodo central se levantó correctamente
+
+```bash
+kubectl exec -it central-server-xxxxxxxx-xxxxx -n banco -c central-server-container -- /bin/sh
+```
+
+## Verificar despliegue de base de datos
+
+```bash
+kubectl exec -it worker-db-x -n banco -- bash
+
+# Una vez dentro de la terminal de contenedor de postgres
+psql -U user_parcial -d banco_distribuido
+```
+
+## Verificar logs del nodo central y nodos trabajadores
+
+```bash 
+kubectl logs worker-db-0 -n banco
+kubectl logs central-server-6d6ff6d545-rghss -n banco
+```
+
+
 ## TODO
 
 Añadir Probes para los nodos trabajadores

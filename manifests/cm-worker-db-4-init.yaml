@@ -25,3 +25,29 @@ data:
     FECHA_HORA TIMESTAMP,
     ESTADO VARCHAR(20)
     );
+    INSERT INTO Cliente (ID_CLIENTE, NOMBRE, EMAIL, TELEFONO) VALUES
+    ('C006', 'Pedro Quispe', 'pedro.quispe@mail.com', '982109876'),
+    ('C007', 'Sofía Paredes', 'sofia.paredes@mail.com', '981098765'),
+    ('C008', 'Carlos Rivas', 'carlos.rivas@mail.com', '980987654'),
+    ('C009', 'Elena Castañeda', 'elena.castaneda@mail.com', '979876543'),
+    ('C010', 'Marco Silva', 'marco.silva@mail.com', '978765432');
+    INSERT INTO Cuenta (ID_CUENTA, ID_CLIENTE, SALDO, TIPO_CUENTA) VALUES
+    ('CU001', 'C001', 1200.00, 'debito'),
+    ('CU002', 'C001', 5000.00, 'credito'),
+    ('CU003', 'C002', 300.00, 'debito'),
+    ('CU004', 'C002', 2000.00, 'credito'),
+    ('CU005', 'C003', 1500.00, 'debito'),
+    ('CU006', 'C003', 4500.00, 'credito'),
+    ('CU007', 'C004', 800.00, 'debito'),
+    ('CU008', 'C004', 2500.00, 'credito'),
+    ('CU009', 'C005', 600.00, 'debito'),
+    ('CU010', 'C005', 3000.00, 'credito');
+    INSERT INTO Transacciones (ID_TRANSACCION, ID_ORIGEN, ID_DESTINO, MONTO, FECHA_HORA, ESTADO) VALUES
+    ('T001', 'CU001', 'CU003', 200.00, '2025-05-20 09:00:00', 'completado'),
+    ('T002', 'CU005', 'CU007', 150.00, '2025-05-20 10:00:00', 'completado'),
+    ('T003', 'CU009', 'CU011', 100.00, '2025-05-20 11:00:00', 'completado'),
+    ('T004', 'CU013', 'CU015', 50.00, '2025-05-20 12:00:00', 'completado'),
+    ('T005', 'CU017', 'CU019', 120.00, '2025-05-20 13:00:00', 'completado'),
+    ('T006', 'CU003', 'CU002', 90.00, '2025-05-20 14:00:00', 'completado'),
+    ('T007', 'CU004', 'CU006', 300.00, '2025-05-20 15:00:00', 'rechazado'),
+    ('T008', 'CU008', 'CU010', 220.00, '2025-05-20 16:00:00', 'completado');
