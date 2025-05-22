@@ -81,7 +81,23 @@ banco-distribuido-sistema/
                                 ├── DatabaseManager.java
                                 └── dao/
                                     ├── CuentaDAO.java
-                                    └── TransaccionDAO.java 
+                                    └── TransaccionDAO.java
+└── manifest
+    └── lp_java
+        └── central-server-deployment.yml
+        └── db-statefulset.yml
+    ├── cm-worker-db-0init.yaml
+    ├── cm-worker-db-1-init.yaml
+    ├── cm-worker-db-2-init.yaml
+    ├── cm-worker-db-3-init.yaml
+    ├── cm-worker-db-4-init.yaml
+    ├── cm-worker-db-5-init.yaml
+└── schemas
+    ├── Cliente.sqñ
+    ├── Cuenta.sql
+    ├── Transacciones.sql
+└── .gitignore
+└── README.md
 ```
 
 ## TODO

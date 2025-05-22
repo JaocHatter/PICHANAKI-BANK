@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-worker-py-0-init # Must match the name in the deployment's volumes section
+  namespace: banco
+data:
+  # This key becomes the filename inside the mounted directory
+  cuenta_py_0_r1.txt: |
+    # ID_CUENTA|ID_CLIENTE|SALDO|TIPO_CUENTA (as per your Python script's parser)
+    701|301|2500.00|AhorrosPython
+    702|302|500.75|CorrientePython
+    703|301|1000.00|AhorrosPython
+
+  # This key also becomes a filename
+  transacciones_py_0_r1.txt: |
+    # ID_TRANSACC|ID_ORIGEN|ID_DESTINO|MONTO|FECHA_HORA|ESTADO (as per your Python script)
+    # Initially, this might be empty or have some seed transactions if needed
+    # 1|701|702|50.00|2025-05-20 10:00:00|Confirmada
+
+  # If you also have a Cliente table partition for this Python worker:
+  # cliente_py_0_r1.txt: |
+  #   ID_CLIENTE|NOMBRE|EMAIL|TELEFONO
+  #   301|Alice Pythonista|alice@pymail.com|112233445
+  #   302|Bob Coder|bob@pymail.com|556677889

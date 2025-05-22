@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-worker-node-0 # Example name, you might have multiple python workers
+  namespace: banco # Assuming the same namespace as your Java components
+  labels:
+    app: python-worker-node
+    instance: python-worker-0
+spec:
+  replicas: 1 # Start with one replica, can be scaled
+  selector:
+    matchLabels:
+      app: python-worker-node
+      instance: python-worker-0
+  template:
+    metadata:
+      labels:
+        app: python-worker-node
+        instance: python-worker-0
+    spec:
+      containers:
+      - name: python-worker
+        image: your-dockerhub-username/pichanaki-bank-python-worker:latest # <-- IMPORTANT: Replace with your actual image path
+        ports:
+        - containerPort: 8082 # Port your Python HTTP server listens on
+        env:
+        - name: DATA_DIR
+          value: "/data/init" # Directory where ConfigMap data will be mounted
+        - name: CUENTA_FILENAME # Corresponds to os.environ.get("CUENTA_FILENAME") in Python
+          value: "cuenta_py_0_r1.txt" # Specific data file for this worker instance
+        - name: TRANSACCIONES_FILENAME # Corresponds to os.environ.get("TRANSACCIONES_FILENAME")
+          value: "transacciones_py_0_r1.txt"
+        # Add other environment variables if needed for your worker's logic
+        volumeMounts:
+        - name: worker-data-init
+          mountPath: "/data/init" # Python script's DATA_DIR will point here
+          readOnly: false # Set to false if your app needs to write/modify these files in the pod
+                          # For true persistence, you'd use PersistentVolumes, but ConfigMaps are for init data.
+                          # If modifying ConfigMap-mounted files, changes are in-memory for the pod and lost on restart
+                          # unless you copy them to another writable volume.
+                          # Given the project constraints (TXT files, replication), how modifications are handled needs clarity.
+                          # For simplicity, this example mounts them. If they are truly dynamic, consider PV/PVC.
+        readinessProbe:
+          httpGet:
+            path: /api/worker/health
+            port: 8082
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/worker/health
+            port: 8082
+          initialDelaySeconds: 30
+          periodSeconds: 20
+      volumes:
+      - name: worker-data-init
+        configMap:
+          name: cm-worker-py-0-init # Name of the ConfigMap holding the initial data files
+          # defaultMode: 0644 # Optional: file permissions
